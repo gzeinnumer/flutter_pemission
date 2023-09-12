@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
@@ -57,9 +58,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () async {
                 var status = await Permission.camera.status;
+                showToast("Camera access : ${status}");
+
                 if (status.isGranted) {
                   showToast("Camera access granted");
-                } else if (status.isDenied) {
+                } else if (!status.isGranted) {
                   requestCameraPermission();
                 }
               },
@@ -68,13 +71,28 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () async {
                 var status = await Permission.storage.status;
+                showToast("Storage access : ${status}");
+
                 if (status.isGranted) {
                   showToast("Storage access granted");
-                } else if (status.isDenied) {
+                } else if (!status.isGranted) {
                   requestStoragePermission();
                 }
               },
               child: const Text("Ask storage permission"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                var status = await Permission.location.status;
+                showToast("Location access : ${status}");
+
+                if (status.isGranted) {
+                  showToast("Location access granted");
+                } else if (!status.isGranted) {
+                  requestLocationPermission();
+                }
+              },
+              child: const Text("Ask Location permission"),
             ),
           ],
         ),
@@ -86,38 +104,54 @@ class _MyHomePageState extends State<MyHomePage> {
     String message, {
     bool isError = false,
   }) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      backgroundColor: isError ? Colors.red : null,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+    ));
+    // Fluttertoast.showToast(
+    //   msg: message,
+    //   toastLength: Toast.LENGTH_SHORT,
+    //   gravity: ToastGravity.CENTER,
+    //   timeInSecForIosWeb: 1,
+    //   backgroundColor: isError ? Colors.red : null,
+    //   textColor: Colors.white,
+    //   fontSize: 16.0,
+    // );
   }
 
   Future<void> requestStoragePermission() async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
-      showToast("Storage access denied");
-    } else if (status.isDenied) {
-      showToast("Storage access permanently denied");
-    } else if (status.isPermanentlyDenied) {
       showToast("Storage access granted");
+    } else if (status.isDenied) {
+      showToast("Storage access denied");
+    } else if (status.isPermanentlyDenied) {
+      showToast("Storage access permanently denied");
     } else {
       showToast("Storage access : ${status.isGranted}");
     }
   }
 
+  Future<void> requestLocationPermission() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      showToast("Location access granted");
+    } else if (status.isDenied) {
+      showToast("Location access denied");
+    } else if (status.isPermanentlyDenied) {
+      showToast("Location access permanently denied");
+    } else {
+      showToast("Location access : ${status.isGranted}");
+    }
+  }
+
   Future<void> requestCameraPermission() async {
     var status = await Permission.camera.request();
-    if (status.isDenied) {
+    if (status.isGranted) {
+      showToast("Camera access granted");
+    } else if (status.isDenied) {
       showToast("Camera access denied");
     } else if (status.isPermanentlyDenied) {
       showToast("Camera access permanently denied");
-    } else if (status.isGranted) {
-      showToast("Camera access granted");
     } else {
       showToast("Camera access : ${status.isGranted}");
     }

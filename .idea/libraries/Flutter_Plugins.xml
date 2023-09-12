@@ -2,7 +2,6 @@
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
     <CLASSES>
       <root url="file://$PROJECT_DIR$/../../sdk/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler-10.4.5" />
-      <root url="file://$PROJECT_DIR$/../../sdk/flutter/.pub-cache/hosted/pub.dartlang.org/fluttertoast-8.2.2" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
